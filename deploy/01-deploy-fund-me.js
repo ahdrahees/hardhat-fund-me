@@ -20,4 +20,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deploy, log } = deployments
     const { deployer } = await getNamedAccounts()
     const chianId = network.config.chainId
+
+    // well what happens when we wants to change chains?
+    // when going for localhost or hardhat network we wants to use mock
 }
