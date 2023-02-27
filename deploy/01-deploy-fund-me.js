@@ -30,10 +30,12 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
     // if chainId is x use y as address
     // if chainId is a use b as address
+    const ethUsdPriceFeedAddress = networkConfig.chainId.ethUsdPriceFeed
+    // const ethUsdPriceFeedAddress = networkConfig[chianId]["ethUsdPriceFeed"] // It is similar to above, it is a way to take value from a nested object
 
     const fundMe = await deploy("FundMe", {
         from: deployer,
-        args: [address], // put price feed address here
+        args: [ethUsdPriceFeedAddress], // put price feed address here
         log: true,
     })
 }
