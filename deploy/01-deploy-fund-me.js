@@ -3,6 +3,7 @@
 //calling main funtion
 
 const { network } = require("hardhat")
+const { networkConfig } = require("../helper-hardhat-config.js")
 
 // async function deployFunc(hre) {
 // hre.getNamedAccounts
