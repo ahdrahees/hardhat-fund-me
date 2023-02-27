@@ -23,4 +23,13 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
     // well what happens when we wants to change chains?
     // when going for localhost or hardhat network we wants to use mock
+
+    // if chainId is x use y as address
+    // if chainId is a use b as address
+
+    const fundMe = await deploy("FundMe", {
+        from: deployer,
+        args: [address], // put price feed address here
+        log: true,
+    })
 }
