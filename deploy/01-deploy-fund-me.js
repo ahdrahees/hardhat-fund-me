@@ -39,3 +39,5 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         log: true,
     })
 }
+
+//git comited
