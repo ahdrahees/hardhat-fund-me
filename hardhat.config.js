@@ -16,7 +16,15 @@ module.exports = {
             chainId: 5,
         },
     },
-    solidity: "0.8.17",
+    // solidity: "0.8.17",  // we can add multilpe solidity versions for compiler
+    solidity: {
+        compilers: [
+            { version: "0.8.0" },
+            { version: "0.8.2" },
+            { version: "0.8.17" },
+            { version: "0.6.6" },
+        ],
+    },
     namedAccounts: {
         deployer: {
             default: 0,
