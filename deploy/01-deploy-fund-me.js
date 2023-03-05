@@ -49,6 +49,13 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         args: [ethUsdPriceFeedAddress], // put price feed address here
         log: true,
     })
+
+    if (
+        !developmentChains.includes(network.name) &&
+        process.env.ETHERSCAN_API_KEY
+    ) {
+        //VERIFy
+    }
     log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
 }
 
