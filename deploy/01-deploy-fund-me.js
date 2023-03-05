@@ -11,6 +11,8 @@ const {
 const helperConfig = require("../helper-hardhat-config.js")
 const networkConfig = helperConfig.networkConfig    */
 
+const { verify } = require("../utils/verify")
+
 // async function deployFunc(hre) {
 // hre.getNamedAccounts
 // hre.deployments
@@ -44,17 +46,21 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         ethUsdPriceFeedAddress = networkConfig[chianId]["ethUsdPriceFeed"]
     }
 
+    const args = [ethUsdPriceFeedAddress]
+    // deploy
     const fundMe = await deploy("FundMe", {
         from: deployer,
-        args: [ethUsdPriceFeedAddress], // put price feed address here
+        args: args, // put price feed address here
         log: true,
+        waitConfirmations: network.config.blockConfirmation || 1,
     })
 
+    // verify
     if (
         !developmentChains.includes(network.name) &&
         process.env.ETHERSCAN_API_KEY
     ) {
-        //VERIFy
+        await verify(fundMe.address, args)
     }
     log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
 }
