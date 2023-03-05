@@ -3,7 +3,10 @@
 //calling main funtion
 
 const { network } = require("hardhat")
-const { networkConfig } = require("../helper-hardhat-config.js")
+const {
+    networkConfig,
+    developmentChains,
+} = require("../helper-hardhat-config.js")
 /* similar to above which is in one line
 const helperConfig = require("../helper-hardhat-config.js")
 const networkConfig = helperConfig.networkConfig    */
@@ -30,12 +33,23 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
     // if chainId is x use y as address
     // if chainId is a use b as address
-    const ethUsdPriceFeedAddress = networkConfig.chainId.ethUsdPriceFeed
+    // const ethUsdPriceFeedAddress = networkConfig.chainId.ethUsdPriceFeed
     // const ethUsdPriceFeedAddress = networkConfig[chianId]["ethUsdPriceFeed"] // It is similar to above, it is a way to take value from a nested object
+
+    let ethUsdPriceFeedAddress
+    if (developmentChains.includes(network.name)) {
+        const ethUsdAggregator = await deployments.get("MockV3Aggregator")
+        ethUsdPriceFeedAddress = ethUsdAggregator.address
+    } else {
+        ethUsdPriceFeedAddress = networkConfig[chianId]["ethUsdPriceFeed"]
+    }
 
     const fundMe = await deploy("FundMe", {
         from: deployer,
         args: [ethUsdPriceFeedAddress], // put price feed address here
         log: true,
     })
+    log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
 }
+
+module.exports.tags = ["all", "fundme"]
