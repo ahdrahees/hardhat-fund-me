@@ -1,16 +1,26 @@
 // SPDX-License-Identifier: MIT
+//1. Pragma statements
 pragma solidity ^0.8.0;
 
-import "./PriceConverter.sol"; //importing PriceConverter
+//2. Import statements
+import "./PriceConverter.sol";
 
-//859,865
-//840281
-//816858
-error NotOwner();
+//3. Error codes
+error FundMe__NotOwner();
 
+//4. Interfaces, 5. Libraries, 6. Contracts
+
+/**
+ * @title A contract for crowd funding
+ * @author ahdrahees
+ * @notice This contract is to demo a sample funding contract
+ * @dev This implement price feeds as our library
+ */
 contract FundMe {
+    //a. Type declarations
     using PriceConverter for uint256; // attaching library into uint256
 
+    //b. State variables
     uint256 public constant MINIMUM_USD = 50 * 1e18; // 1 * 10**18
     // 21,393 gas- constant = 21393 * 12 == 0.31062636 usd
     //23,493 gas =  23493 * 12000000000= 0.000281916 eth= 0.34111836 usd - without constant var
@@ -25,11 +35,33 @@ contract FundMe {
 
     AggregatorV3Interface public priceFeed;
 
+    //c. Events, d. Errors, e. Modifiers
+    modifier onlyOwner() {
+        // require(msg.sender == i_owner, "Sender is not owner!");       // to check the owner of the contract
+        if (msg.sender != i_owner) {
+            revert FundMe__NotOwner();
+        }
+        _; // continue rest of the code in the withdraw() if the require is true
+    }
+
+    //f. Functions
     constructor(address priceFeedAddress) {
         i_owner = msg.sender;
         priceFeed = AggregatorV3Interface(priceFeedAddress);
     }
 
+    receive() external payable {
+        fund();
+    }
+
+    fallback() external payable {
+        fund();
+    }
+
+    /**
+     * @notice This function fund this contarct
+     * @dev This implement price feeds as our library
+     */
     function fund() public payable {
         require(
             msg.value.getConversionRate(priceFeed) >= MINIMUM_USD,
@@ -54,21 +86,5 @@ contract FundMe {
             value: address(this).balance
         }("");
         require(callSuccess, "Call withdraw failed");
-    }
-
-    modifier onlyOwner() {
-        // require(msg.sender == i_owner, "Sender is not owner!");       // to check the owner of the contract
-        if (msg.sender != i_owner) {
-            revert NotOwner();
-        }
-        _; // continue rest of the code in the withdraw() if the require is true
-    }
-
-    receive() external payable {
-        fund();
-    }
-
-    fallback() external payable {
-        fund();
     }
 }
