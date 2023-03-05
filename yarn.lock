@@ -692,10 +692,10 @@
   resolved "https://registry.yarnpkg.com/hardhat-deploy-ethers/-/hardhat-deploy-ethers-0.3.0-beta.13.tgz#b96086ff768ddf69928984d5eb0a8d78cfca9366"
   integrity sha512-PdWVcKB9coqWV1L7JTpfXRCI91Cgwsm7KLmBcwZ8f0COSm1xtABHZTyz3fvF6p42cTnz1VM0QnfDvMFlIRkSNw==
 
-"@nomiclabs/hardhat-etherscan@^3.0.0":
-  version "3.1.6"
-  resolved "https://registry.yarnpkg.com/@nomiclabs/hardhat-etherscan/-/hardhat-etherscan-3.1.6.tgz#7e50aeb06501a0060655664599d9e35cfd475929"
-  integrity sha512-5WFIZeLLgWPiCJqm/4ie7UNXn7FXfzYmqnKwOKU2MLETGolzY1cueSYUTww/P8f+Zc9xfJLmzqSYcGLW/3j/IQ==
+"@nomiclabs/hardhat-etherscan@^3.1.7":
+  version "3.1.7"
+  resolved "https://registry.yarnpkg.com/@nomiclabs/hardhat-etherscan/-/hardhat-etherscan-3.1.7.tgz#72e3d5bd5d0ceb695e097a7f6f5ff6fcbf062b9a"
+  integrity sha512-tZ3TvSgpvsQ6B6OGmo1/Au6u8BrAkvs1mIC/eURA3xgIfznUZBhmpne8hv7BXUzw9xNL3fXdpOYgOQlVMTcoHQ==
   dependencies:
     "@ethersproject/abi" "^5.1.2"
     "@ethersproject/address" "^5.0.2"
@@ -2650,7 +2650,7 @@ hardhat-deploy@^0.11.23:
     qs "^6.9.4"
     zksync-web3 "^0.8.1"
 
-hardhat-gas-reporter@^1.0.8:
+hardhat-gas-reporter@^1.0.9:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/hardhat-gas-reporter/-/hardhat-gas-reporter-1.0.9.tgz#9a2afb354bc3b6346aab55b1c02ca556d0e16450"
   integrity sha512-INN26G3EW43adGKBNzYWOlI3+rlLnasXTwW79YNnUhXPDa+yHESgt639dJEs37gCjhkbNKcRRJnomXEuMFBXJg==
@@ -4367,7 +4367,7 @@ solhint@^3.4.0:
   optionalDependencies:
     prettier "^2.8.3"
 
-solidity-coverage@^0.8.0:
+solidity-coverage@^0.8.2:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/solidity-coverage/-/solidity-coverage-0.8.2.tgz#bc39604ab7ce0a3fa7767b126b44191830c07813"
   integrity sha512-cv2bWb7lOXPE9/SSleDO6czkFiMHgP4NXPj+iW9W7iEKLBk7Cj0AGBiNmGX3V1totl9wjPrT0gHmABZKZt65rQ==
