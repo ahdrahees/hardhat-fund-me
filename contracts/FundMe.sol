@@ -50,13 +50,13 @@ contract FundMe {
         priceFeed = AggregatorV3Interface(priceFeedAddress);
     }
 
-    receive() external payable {
-        fund();
-    }
+    // receive() external payable {
+    //     fund();
+    // }
 
-    fallback() external payable {
-        fund();
-    }
+    // fallback() external payable {
+    //     fund();
+    // }
 
     /**
      * @notice This function fund this contarct
@@ -65,7 +65,7 @@ contract FundMe {
     function fund() public payable {
         require(
             msg.value.getConversionRate(priceFeed) >= MINIMUM_USD,
-            "Didn't send enough!"
+            "Didn't send enough ETH!"
         );
         funders.push(msg.sender);
         addressToAmountedFunded[msg.sender] += msg.value;
