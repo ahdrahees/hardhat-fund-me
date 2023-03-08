@@ -25,15 +25,15 @@ contract FundMe {
     // 21,393 gas- constant = 21393 * 12 == 0.31062636 usd
     //23,493 gas =  23493 * 12000000000= 0.000281916 eth= 0.34111836 usd - without constant var
 
-    address[] public funders;
-    mapping(address => uint256) public addressToAmountedFunded;
+    address[] public s_funders; // s_ indicate this will be storage variable ( convection or style, practices)
+    mapping(address => uint256) public s_addressToAmountedFunded;
 
     address public immutable i_owner;
 
     //23644 gas-
     // 21508 gas- immutable
 
-    AggregatorV3Interface public priceFeed;
+    AggregatorV3Interface public s_priceFeed;
 
     //c. Events, d. Errors, e. Modifiers
     modifier onlyOwner() {
@@ -47,7 +47,7 @@ contract FundMe {
     //f. Functions
     constructor(address priceFeedAddress) {
         i_owner = msg.sender;
-        priceFeed = AggregatorV3Interface(priceFeedAddress);
+        s_priceFeed = AggregatorV3Interface(priceFeedAddress);
     }
 
     // receive() external payable {
@@ -64,23 +64,23 @@ contract FundMe {
      */
     function fund() public payable {
         require(
-            msg.value.getConversionRate(priceFeed) >= MINIMUM_USD,
+            msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD,
             "Didn't send enough ETH!"
         );
-        funders.push(msg.sender);
-        addressToAmountedFunded[msg.sender] += msg.value;
+        s_funders.push(msg.sender);
+        s_addressToAmountedFunded[msg.sender] += msg.value;
     }
 
     function withdraw() public onlyOwner {
         for (
             uint256 funderIndex = 0;
-            funderIndex < funders.length;
+            funderIndex < s_funders.length;
             funderIndex++
         ) {
-            address funder = funders[funderIndex];
-            addressToAmountedFunded[funder] = 0;
+            address s_funder = s_funders[funderIndex];
+            s_addressToAmountedFunded[s_funder] = 0;
         }
-        funders = new address[](0); // reset the array funders
+        s_funders = new address[](0); // reset the array funders
 
         (bool callSuccess, ) = payable(msg.sender).call{
             value: address(this).balance
