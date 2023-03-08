@@ -25,15 +25,15 @@ contract FundMe {
     // 21,393 gas- constant = 21393 * 12 == 0.31062636 usd
     //23,493 gas =  23493 * 12000000000= 0.000281916 eth= 0.34111836 usd - without constant var
 
-    address[] public s_funders; // s_ indicate this will be storage variable ( convection or style, practices)
-    mapping(address => uint256) public s_addressToAmountedFunded;
+    address[] private s_funders; // s_ indicate this will be storage variable ( convection or style, practices)
+    mapping(address => uint256) private s_addressToAmountedFunded;
 
-    address public immutable i_owner;
+    address private immutable i_owner;
 
     //23644 gas-
     // 21508 gas- immutable
 
-    AggregatorV3Interface public s_priceFeed;
+    AggregatorV3Interface private s_priceFeed;
 
     //c. Events, d. Errors, e. Modifiers
     modifier onlyOwner() {
@@ -77,8 +77,8 @@ contract FundMe {
             funderIndex < s_funders.length;
             funderIndex++
         ) {
-            address s_funder = s_funders[funderIndex];
-            s_addressToAmountedFunded[s_funder] = 0;
+            address funder = s_funders[funderIndex];
+            s_addressToAmountedFunded[funder] = 0;
         }
         s_funders = new address[](0); // reset the array funders
 
@@ -86,5 +86,44 @@ contract FundMe {
             value: address(this).balance
         }("");
         require(callSuccess, "Call withdraw failed");
+    }
+
+    function cheaperWithdraw() public payable onlyOwner {
+        address[] memory funders = s_funders; // memory will be cheaper to read
+        // mapping's can't be in memory
+        for (
+            uint256 funderIndex = 0;
+            funderIndex < funders.length;
+            funderIndex++
+        ) {
+            address funder = funders[funderIndex];
+            s_addressToAmountedFunded[funder] = 0;
+        }
+        s_funders = new address[](0);
+        // (bool callSuccess, ) = payable(msg.sender).call{
+        //     value: address(this).balance
+        // }("");
+        // require(callSuccess, "Call withdraw failed");
+
+        (bool success, ) = i_owner.call{value: address(this).balance}("");
+        require(success);
+    }
+
+    function getOwner() public view returns (address) {
+        return i_owner;
+    }
+
+    function getFunders(uint256 index) public view returns (address) {
+        return s_funders[index];
+    }
+
+    function getAddressToAmountedFunded(
+        address funder
+    ) public view returns (uint256) {
+        return s_addressToAmountedFunded[funder];
+    }
+
+    function getPriceFeed() public view returns (AggregatorV3Interface) {
+        return s_priceFeed;
     }
 }
