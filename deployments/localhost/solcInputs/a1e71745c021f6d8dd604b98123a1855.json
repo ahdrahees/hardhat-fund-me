@@ -1,0 +1,41 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ninterface AggregatorV3Interface {\n  function decimals() external view returns (uint8);\n\n  function description() external view returns (string memory);\n\n  function version() external view returns (uint256);\n\n  function getRoundData(uint80 _roundId)\n    external\n    view\n    returns (\n      uint80 roundId,\n      int256 answer,\n      uint256 startedAt,\n      uint256 updatedAt,\n      uint80 answeredInRound\n    );\n\n  function latestRoundData()\n    external\n    view\n    returns (\n      uint80 roundId,\n      int256 answer,\n      uint256 startedAt,\n      uint256 updatedAt,\n      uint80 answeredInRound\n    );\n}\n"
+    },
+    "contracts/FundMe.sol": {
+      "content": "// SPDX-License-Identifier: MIT\n//1. Pragma statements\npragma solidity ^0.8.0;\n\n//2. Import statements\nimport \"./PriceConverter.sol\";\n\n//3. Error codes\nerror FundMe__NotOwner();\n\n//4. Interfaces, 5. Libraries, 6. Contracts\n\n/**\n * @title A contract for crowd funding\n * @author ahdrahees\n * @notice This contract is to demo a sample funding contract\n * @dev This implement price feeds as our library\n */\ncontract FundMe {\n    //a. Type declarations\n    using PriceConverter for uint256; // attaching library into uint256\n\n    //b. State variables\n    uint256 public constant MINIMUM_USD = 50 * 1e18; // 1 * 10**18\n    // 21,393 gas- constant = 21393 * 12 == 0.31062636 usd\n    //23,493 gas =  23493 * 12000000000= 0.000281916 eth= 0.34111836 usd - without constant var\n\n    address[] private s_funders; // s_ indicate this will be storage variable ( convection or style, practices)\n    mapping(address => uint256) private s_addressToAmountedFunded;\n\n    address private immutable i_owner;\n\n    //23644 gas-\n    // 21508 gas- immutable\n\n    AggregatorV3Interface private s_priceFeed;\n\n    //c. Events, d. Errors, e. Modifiers\n    modifier onlyOwner() {\n        // require(msg.sender == i_owner, \"Sender is not owner!\");       // to check the owner of the contract\n        if (msg.sender != i_owner) {\n            revert FundMe__NotOwner();\n        }\n        _; // continue rest of the code in the withdraw() if the require is true\n    }\n\n    //f. Functions\n    constructor(address priceFeedAddress) {\n        i_owner = msg.sender;\n        s_priceFeed = AggregatorV3Interface(priceFeedAddress);\n    }\n\n    // receive() external payable {\n    //     fund();\n    // }\n\n    // fallback() external payable {\n    //     fund();\n    // }\n\n    /**\n     * @notice This function fund this contarct\n     * @dev This implement price feeds as our library\n     */\n    function fund() public payable {\n        require(\n            msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD,\n            \"Didn't send enough ETH!\"\n        );\n        s_funders.push(msg.sender);\n        s_addressToAmountedFunded[msg.sender] += msg.value;\n    }\n\n    function withdraw() public onlyOwner {\n        for (\n            uint256 funderIndex = 0;\n            funderIndex < s_funders.length;\n            funderIndex++\n        ) {\n            address funder = s_funders[funderIndex];\n            s_addressToAmountedFunded[funder] = 0;\n        }\n        s_funders = new address[](0); // reset the array funders\n\n        (bool callSuccess, ) = payable(msg.sender).call{\n            value: address(this).balance\n        }(\"\");\n        require(callSuccess, \"Call withdraw failed\");\n    }\n\n    function cheaperWithdraw() public payable onlyOwner {\n        address[] memory funders = s_funders; // memory will be cheaper to read\n        // mapping's can't be in memory\n        for (\n            uint256 funderIndex = 0;\n            funderIndex < funders.length;\n            funderIndex++\n        ) {\n            address funder = funders[funderIndex];\n            s_addressToAmountedFunded[funder] = 0;\n        }\n        s_funders = new address[](0);\n        // (bool callSuccess, ) = payable(msg.sender).call{\n        //     value: address(this).balance\n        // }(\"\");\n        // require(callSuccess, \"Call withdraw failed\");\n\n        (bool success, ) = i_owner.call{value: address(this).balance}(\"\");\n        require(success);\n    }\n\n    function getOwner() public view returns (address) {\n        return i_owner;\n    }\n\n    function getFunders(uint256 index) public view returns (address) {\n        return s_funders[index];\n    }\n\n    function getAddressToAmountedFunded(\n        address funder\n    ) public view returns (uint256) {\n        return s_addressToAmountedFunded[funder];\n    }\n\n    function getPriceFeed() public view returns (AggregatorV3Interface) {\n        return s_priceFeed;\n    }\n}\n"
+    },
+    "contracts/PriceConverter.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\nimport \"@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol\";\n\nlibrary PriceConverter {\n    function getPrice(\n        AggregatorV3Interface priceFeed\n    ) internal view returns (uint256) {\n        (, int256 price, , , ) = priceFeed.latestRoundData();\n        return uint256(price * 1e10);\n    }\n\n    function getConversionRate(\n        uint256 ethAmount,\n        AggregatorV3Interface priceFeed\n    ) internal view returns (uint256) {\n        uint256 ethPrice = getPrice(priceFeed);\n        uint256 ethAmountInUsd = (ethPrice * ethAmount) / 1e18;\n        return ethAmountInUsd;\n    }\n}\n"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}
