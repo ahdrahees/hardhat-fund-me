@@ -62,7 +62,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     ) {
         await verify(fundMe.address, args)
     }
-    log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+    log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
 }
 
 module.exports.tags = ["all", "fundme"]
