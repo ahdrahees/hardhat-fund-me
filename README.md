@@ -1,6 +1,6 @@
 # Crowd Funding Hardhat Project
 
-This project demonstrates Hardhat use case. It comes with a FundMe contract, a test for that contract both unit testing and staging testing, and a script that incract with fund() and withdraw() function in that contract. The contract is deployed by using hardhat-deploy.
+This project demonstrates Hardhat use case. It comes with a `FundMe` contract, a test for that contract both unit testing and staging testing, and a script that incract with `fund()` and `withdraw()` function in that contract. The contract is deployed by using hardhat-deploy.
 
 Try running some of the following tasks:
 
