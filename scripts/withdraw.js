@@ -4,6 +4,7 @@ async function main() {
     const { deployer } = await getNamedAccounts()
     const fundMe = await ethers.getContract("FundMe", deployer)
     console.log("Initialising withdrawing...")
+
     const transactionResponse = await fundMe.withdraw()
     await transactionResponse.wait(1)
     console.log("Withdrawed!")
