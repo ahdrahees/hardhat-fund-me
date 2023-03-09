@@ -1,4 +1,7 @@
 {
+  "name": "hardhat-fund-me",
+  "author": {"name": "Rahees","email": "ahdrahees.dev@gmail.com","url": "https://github.com/ahdrahees/hardhat-fund-me"},
+  "version": "1.0.0",
   "devDependencies": {
     "@ethersproject/abi": "^5.4.7",
     "@ethersproject/providers": "^5.4.7",
@@ -20,6 +23,14 @@
   "dependencies": {
     "@chainlink/contracts": "^0.6.1",
     "dotenv": "^16.0.3",
-    "solhint": "^3.4.0"
+    "solhint": "^3.4.1"
+  },
+  "scripts": {
+    "test": "yarn hardhat test",
+    "test:staging": "yarn hardhat test --network goerli",
+    "lint": "yarn solhint 'contracts/*.sol'",
+    "lint:fix": "yarn solhint 'contracts/*.sol' --fix",
+    "format": "yarn prettier --write .",
+    "coverage": "yarn hardhat coverage"
   }
 }
