@@ -183,7 +183,7 @@ const { developmentChains } = require("../../helper-hardhat-config")
               it("cheaperWithdraw testing...", async function () {
                   // Arrange
                   const accounts = await ethers.getSigners()
-                  // we start with i=1 because 0th account will be deployer
+                  // we start with i=1 because 0th account will be deployer.
                   for (let i = 1; i < 6; i++) {
                       const fundMeConnectedContract = await fundMe.connect(
                           accounts[i]
